@@ -1,268 +1,218 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HailServer — Майнкрафт Анархия и Выживание</title>
-    <link rel="icon" href="favicon.png" type="image/png">
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "HailServer-Майнкрафт",
-      "alternateName": ["Хеил Сервер Майнкрафт", "HailServer"],
-      "url": "https://hailserver.myftp.org"
-    }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
-    
-    <style>
-        :root {
-            --bg-dark: #0a0a0c;
-            --bg-panel: #121217;
-            --accent-purple: #7c3aed;
-            --accent-blue: #3b82f6;
-            --text-main: #ffffff;
-            --text-muted: #8e99ab;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
+<title>HailServer PvP анархия — Minecraft сервер</title>
+<meta name="description" content="HailServer — PvP анархия Minecraft сервер. Честное выживание, свобода действий, минимальные правила. Версии 1.16.5–1.21.">
+<meta name="keywords" content="hailserver, hail server, hailserver minecraft, майнкрафт сервер, pvp анархия minecraft">
+<meta name="robots" content="index, follow">
+<meta name="author" content="HailServer">
 
-        .bg-glow {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% -10%, #1e103d 0%, transparent 60%);
-            z-index: -1;
-        }
+<!-- Open Graph -->
+<meta property="og:title" content="HailServer PvP анархия">
+<meta property="og:description" content="PvP анархия Minecraft сервер без ограничений. Честная игра и свобода.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/favicon.png">
 
-        header {
-            padding: 100px 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+<!-- Favicon -->
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
 
-        .hero-content { z-index: 5; max-width: 700px; }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
-        .logo-text {
-            font-family: 'Press Start 2P', cursive;
-            font-size: clamp(24px, 5vw, 46px);
-            text-shadow: 4px 4px 0px var(--accent-purple);
-            margin-bottom: 25px;
-        }
+<style>
+:root{
+--bg:#120018;
+--bg2:#1b0026;
+--panel:#1f0030;
+--accent:#b26bff;
+--accent2:#8b5cf6;
+--text:#ffffff;
+--muted:#d9caff;
+--glow:0 0 35px rgba(178,107,255,.55);
+--d1:#a855f7;
+--d2:#c084fc;
+--d3:#9333ea;
+}
 
-        .hero-desc { color: var(--text-muted); font-size: 17px; margin-bottom: 35px; }
+/* ===== ОБЩЕЕ ===== */
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+font-family:'Inter',sans-serif;
+color:var(--text);
+background:radial-gradient(circle at top,var(--bg2),var(--bg));
+overflow-x:hidden;
+scroll-behavior:smooth;
+}
 
-        /* IP с плавным RGB переливом */
-        .ip-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            color: #fff;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 13px;
-            padding: 18px 25px;
-            cursor: pointer;
-            border-radius: 10px;
-            position: relative;
-            background: #0a0a0c;
-            transition: 0.3s transform;
-            z-index: 1;
-        }
+/* ===== ОБЛАКА ===== */
+.sky{
+position:fixed; inset:0; z-index:-1; overflow:hidden;
+}
+.cloud{
+position:absolute;
+width:256px;
+height:80px;
+background:
+linear-gradient(#fff,#fff) 0 32px/64px 48px,
+linear-gradient(#fff,#fff) 64px 16px/128px 64px,
+linear-gradient(#fff,#fff) 192px 32px/64px 48px;
+background-repeat:no-repeat;
+opacity:.35;
+filter:drop-shadow(0 0 12px rgba(255,255,255,.35));
+animation:cloudMove linear infinite;
+}
+@keyframes cloudMove{from{transform:translateX(-320px)} to{transform:translateX(120vw)}}
 
-        .ip-badge::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            z-index: -1;
-            background: linear-gradient(90deg, #7c3aed, #3b82f6, #9333ea, #7c3aed);
-            background-size: 300% 100%;
-            border-radius: 12px;
-            animation: moveGradient 4s linear infinite;
-        }
+/* ===== HEADER ===== */
+header{
+max-width:1200px; margin:auto; padding:90px 20px 60px; text-align:center;
+}
+.logo{
+font-family:'Press Start 2P'; font-size:46px; color:var(--accent);
+text-shadow:0 0 35px rgba(178,107,255,.8);
+}
+.desc{
+max-width:900px; margin:30px auto; font-size:18px; line-height:1.8; color:var(--muted);
+}
+.ip{
+display:inline-flex; align-items:center; gap:12px; padding:16px 26px; font-family:'Press Start 2P';
+font-size:13px; background:var(--panel); border-radius:14px; border:2px solid var(--accent);
+cursor:pointer; transition:.3s;
+}
+.ip:hover{transform:scale(1.05); box-shadow:var(--glow);}
+.btns a{
+display:inline-block; margin:14px; padding:14px 30px; font-family:'Press Start 2P';
+font-size:13px; color:#fff; text-decoration:none; border-radius:12px;
+background:linear-gradient(135deg,var(--accent),var(--accent2)); transition:.3s;
+}
+.btns a:hover{transform:translateY(-4px); box-shadow:var(--glow);}
 
-        @keyframes moveGradient {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 100% 50%; }
-        }
+/* ===== SECTIONS ===== */
+.section{max-width:1200px; margin:100px auto; padding:0 20px;}
+.section h2{
+font-family:'Press Start 2P'; font-size:20px; text-align:center;
+color:var(--accent); margin-bottom:50px;
+}
 
-        .ip-badge:active { transform: scale(0.96); }
+/* ===== КАРТОЧКИ РЕЖИМОВ ===== */
+.grid{
+display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:30px;
+}
+.card{
+background:var(--panel); padding:32px; border-radius:22px; border:1px solid rgba(255,255,255,.06);
+transition:.35s; cursor:pointer;
+}
+.card:hover{transform:translateY(-10px); box-shadow:var(--glow);}
+.card img{width:64px;height:64px; image-rendering:pixelated; margin-bottom:18px;}
+.card h3{font-family:'Press Start 2P'; font-size:15px; margin-bottom:14px;}
+.card p{color:var(--muted); font-size:14px; line-height:1.6;}
 
-        .btn-group { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
+/* ===== КАРТОЧКИ ДОНАТА ===== */
+.donate-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:30px; margin-top:30px;}
+.donate-card{background:var(--panel); padding:30px; border-radius:22px; border-left:6px solid; transition:.3s;}
+.donate-card:hover{transform:translateY(-8px); box-shadow:var(--glow);}
+.donate-card h3{font-family:'Press Start 2P'; font-size:16px; margin-bottom:12px;}
+.donate-card .price{font-family:'Press Start 2P'; font-size:20px; margin:12px 0;}
+.donate-card p{font-size:14px; color:var(--muted); line-height:1.6;}
 
-        .btn {
-            padding: 18px 30px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 10px;
-            color: white;
-            transition: 0.2s;
-            cursor: pointer;
-            border: none;
-        }
-
-        .btn-purple { background: var(--accent-purple); box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3); }
-        .btn-outline { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
-        .btn:hover { transform: translateY(-3px); filter: brightness(1.2); }
-
-        /* Визуал справа */
-        .hero-visual {
-            position: relative; width: 350px; height: 350px;
-            display: flex; justify-content: center; align-items: center;
-        }
-
-        .crossed-items {
-            position: relative; font-size: 100px;
-            animation: floating 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 15px var(--accent-purple));
-        }
-
-        @keyframes floating {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .item-sword { position: absolute; transform: translate(-50%, -50%) rotate(-45deg); color: #fff; }
-        .item-pickaxe { position: absolute; transform: translate(-50%, -50%) rotate(45deg); color: #ccc; }
-
-        /* Сетка инфо-блоков */
-        .container { max-width: 1200px; margin: 60px auto; padding: 0 20px; }
-        
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
-
-        .feature-card {
-            background: var(--bg-panel);
-            border-radius: 15px; padding: 40px;
-            display: flex; align-items: flex-start; gap: 25px;
-            border: 1px solid rgba(255,255,255,0.03);
-            transition: 0.3s;
-        }
-
-        .feature-card:hover { border-color: var(--accent-purple); transform: translateY(-5px); }
-
-        .card-icon { width: 64px; height: 64px; image-rendering: pixelated; flex-shrink: 0; }
-
-        .card-info h3 { font-family: 'Press Start 2P', cursive; font-size: 14px; margin-bottom: 12px; color: #fff; }
-        .card-info p { color: var(--text-muted); font-size: 14px; }
-
-        @media (max-width: 992px) {
-            header { flex-direction: column; text-align: center; padding: 50px 20px; }
-            .hero-visual { display: none; }
-            .grid { grid-template-columns: 1fr; }
-        }
-
-        footer { padding: 40px; text-align: center; color: #444; font-size: 10px; font-family: 'Press Start 2P'; border-top: 1px solid #16161a; }
-    </style>
+/* ===== FOOTER ===== */
+footer{margin-top:120px; padding:40px; text-align:center; font-family:'Press Start 2P'; font-size:10px; color:#cbb4ff; border-top:1px solid rgba(255,255,255,.08);}
+</style>
 </head>
+
 <body>
+<div class="sky">
+<div class="cloud" style="top:70px;animation-duration:70s"></div>
+<div class="cloud" style="top:160px;animation-duration:90s"></div>
+<div class="cloud" style="top:280px;animation-duration:110s"></div>
+</div>
 
-    <div class="bg-glow"></div>
+<header>
+<div class="logo">HAILSERVER</div>
+<p class="desc">
+HailServer — PvP анархия Minecraft сервер с честным выживанием.<br>
+Свобода, минимальные правила, честный PvP и кросс-версии.
+</p>
 
-    <header>
-        <div class="hero-content">
-            <div class="logo-text">HAILSERVER</div>
-            <p class="hero-desc">Тренировка PVP,анархия,виживание и многое другое можно найти тут. Сервер доступен для версий с <b>1.16.5 по 1.21</b>. Заходи и начни игру.</p>
-            
-            <div class="ip-badge clickable" id="copyIp">
-                <i class="fas fa-terminal"></i>
-                <span>HAILSERV.DDNS.NET:28299</span>
-            </div>
+<div class="ip" onclick="copyIP()">
+<i class="fa-solid fa-terminal"></i>
+<span id="ipText">hailserv.ddns.net:28299</span>
+</div>
 
-            <div class="btn-group">
-                <a href="https://t.me/HailServer" target="_blank" class="btn btn-purple clickable">TELEGRAM</a>
-                <a href="https://discord.gg/NGH5gu3ayn" target="_blank" class="btn btn-outline clickable">DISCORD</a>
-            </div>
-        </div>
-        
-        <div class="hero-visual">
-            <div class="crossed-items">
-                <i class="fas fa-sword item-sword"></i>
-                <i class="fas fa-pickaxe item-pickaxe"></i>
-            </div>
-        </div>
-    </header>
+<div class="btns">
+<a href="https://t.me/HailServer" target="_blank">Telegram</a>
+<a href="https://discord.gg/NGH5gu3ayn" target="_blank">Discord</a>
+</div>
+</header>
 
-    <div class="container">
-        <div class="grid">
-            <div class="feature-card">
-                <img src="https://assets.mcasset.cloud/1.20.1/assets/minecraft/textures/block/grass_block_side.png" class="card-icon">
-                <div class="card-info">
-                    <h3>РЕЖИМ АНАРХИИ</h3>
-                    <p>Нет приватов,нет доната за который кто то может быть сильнее,только ты и навык. Гриферство, кражи и создание собственной истории — всё это является основой нашего геймплея.</p>
-                </div>
-            </div>
+<section class="section">
+<h2>РЕЖИМЫ СЕРВЕРА</h2>
+<div class="grid">
+<div class="card">
+<img src="https://assets.mcasset.cloud/1.20.1/assets/minecraft/textures/block/grass_block_side.png">
+<h3>АНАРХИЯ</h3>
+<p>Минимум правил — максимум свободы. Нет приватов, все зависит только от игрока.</p>
+</div>
+<div class="card">
+<img src="https://assets.mcasset.cloud/1.20.1/assets/minecraft/textures/item/diamond_sword.png">
+<h3>PVP</h3>
+<p>Классическая боевая система без упрощений. Побеждает сильнейший и умнейший.</p>
+</div>
+<div class="card">
+<img src="https://assets.mcasset.cloud/1.20.1/assets/minecraft/textures/item/spyglass.png">
+<h3>КРОСС-ВЕРСИИ</h3>
+<p>Играй с любой версии Minecraft. Сообщество объединено, сервер оптимизирован для всех.</p>
+</div>
+<div class="card">
+<img src="https://assets.mcasset.cloud/1.20.1/assets/minecraft/textures/block/repeater.png">
+<h3>СТАБИЛЬНОСТЬ</h3>
+<p>Оптимизация для PvP, строительства и длительных сессий без лагов.</p>
+</div>
+</div>
+</section>
 
-            <div class="feature-card">
-                <img src="https://assets.mcasset.cloud/1.20.1/assets/minecraft/textures/item/spyglass.png" class="card-icon">
-                <div class="card-info">
-                    <h3>ВЕРСИИ 1.16.5 — 1.21</h3>
-                    <p>Играй с любой удобной тебе версии. Мы поддерживаем кросс-версионный вход, чтобы объединить всё сообщество.</p>
-                </div>
-            </div>
+<section class="section">
+<h2>ДОНАТ И ПОДДЕРЖКА</h2>
+<div class="donate-grid">
+<div class="donate-card" style="border-color:var(--d1);">
+<h3>ВСПОЛОХ</h3>
+<div class="price" style="color:var(--d1)">$0.49</div>
+<p>Цветная приписка и стартовый набор. Минимальный комфорт без влияния на баланс.</p>
+</div>
+<div class="donate-card" style="border-color:var(--d2);">
+<h3>ТРИН</h3>
+<div class="price" style="color:var(--d2)">$1.19</div>
+<p>Расширенный стартовый набор, приоритет поддержки и уникальная приписка.</p>
+</div>
+<div class="donate-card" style="border-color:var(--d3);">
+<h3>ГЕРЦОГ</h3>
+<div class="price" style="color:var(--d3)">$2.20</div>
+<p>Полёт, усиленный старт, красная приписка, личное общение с разработчиком.</p>
+</div>
+<!-- НОВАЯ КАРТОЧКА С БОТОМ -->
+<div class="donate-card" style="border-color:var(--accent);">
+<h3>КУПИТЬ ЧЕРЕЗ БОТА</h3>
+<p>Покупка доната через Telegram-бот <b>HailServerDonBot</b>.</p>
+<a href="https://t.me/HailServerDonBot" target="_blank" class="btns"><i class="fa-brands fa-telegram"></i> Перейти в бот</a>
+</div>
+</div>
+</section>
 
-            <div class="feature-card">
-                <img src="https://assets.mcasset.cloud/1.20.1/assets/minecraft/textures/item/diamond_sword.png" class="card-icon">
-                <div class="card-info">
-                    <h3>PVP БЕЗ ГРАНИЦ</h3>
-                    <p>Классическая боевая система без искусственных ограничений. Испытайте свои навыки в честных или не очень честных битвах.</p>
-                </div>
-            </div>
+<footer>
+© 2026 HAILSERVER — VANILLA MINECRAFT
+</footer>
 
-            <div class="feature-card">
-                <img src="https://assets.mcasset.cloud/1.20.1/assets/minecraft/textures/block/repeater.png" class="card-icon">
-                <div class="card-info">
-                    <h3>ТЕХНИЧЕСКИЙ TPS</h3>
-                    <p>Сервер оптимизирован для работы на версии 1.16.5. Мы минимизировали задержки, чтобы ПВП-сражения были максимально комфортными.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <footer>
-        © 2026 HAILSERVER — ВАНИЛЬНОЕ ВЫЖИВАНИЕ (1.16.5 - 1.21)
-    </footer>
-
-    <script>
-        function playClick() {
-            const context = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = context.createOscillator();
-            const gain = context.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(150, context.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(0.01, context.currentTime + 0.1);
-            gain.gain.setValueAtTime(0.1, context.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.1);
-            osc.connect(gain);
-            gain.connect(context.destination);
-            osc.start();
-            osc.stop(context.currentTime + 0.1);
-        }
-
-        document.querySelectorAll('.clickable').forEach(btn => {
-            btn.addEventListener('click', playClick);
-        });
-
-        document.getElementById('copyIp').addEventListener('click', function() {
-            const ip = "hailserv.ddns.net:28299";
-            navigator.clipboard.writeText(ip);
-            const span = this.querySelector('span');
-            span.innerText = "IP СКОПИРОВАН";
-            setTimeout(() => { span.innerText = "HAILSERV.DDNS.NET:28299"; }, 2000);
-        });
-    </script>
+<script>
+function copyIP(){
+navigator.clipboard.writeText("hailserv.ddns.net:28299");
+const t=document.getElementById("ipText");
+t.textContent="IP СКОПИРОВАН";
+setTimeout(()=>t.textContent="hailserv.ddns.net:28299",2000);
+}
+</script>
 </body>
 </html>
-
-
-
